@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of matches</title>
+    <link rel="stylesheet" th:href="@{/css/newtable_styles.css}">
+</head>
+<body>
+
+<div class="buttonsInOneLine">
+    <a th:href="@{/tournaments}" class="button">Back to tournaments</a>
+    <a th:href="@{'/tournaments/' + ${tournamentId} + '/summary'}" class="button">Summary</a>
+</div>
+<h2>List of matches</h2>
+
+<div th:each="round : ${matchesByRound.keySet()}">
+    <h3 th:text="'Round ' + ${round}"></h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Match ID</th>
+            <th>ID 1</th>
+            <th>Player 1</th>
+            <th>ID 2</th>
+            <th>Player 2</th>
+            <th>Winner</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="match : ${matchesByRound.get(round)}" th:class="${match.getWinner() != null} ? 'winner-row' : ''">
+            <form th:action="@{matches/update-winner}" method="post">
+                <td data-title="Match ID" th:text="${match.getId()}"></td>
+                <td data-title="ID 1" th:text="${match.getPlayer1().getPlayer().getId()}"></td>
+                <td data-title="Player 1" th:text="${match.getPlayer1().getPlayer().getFirstName() + ' ' + match.getPlayer1().getPlayer().getLastName()}"></td>
+                <td data-title="ID 2" th:text="${match.getPlayer2().getPlayer().getId()}"></td>
+                <td data-title="Player 2" th:text="${match.getPlayer2().getPlayer().getFirstName() + ' ' + match.getPlayer2().getPlayer().getLastName()}"></td>
+
+                <td data-title="Winner">
+
+                        <select name="winnerId">
+                            <option th:value="${match.getPlayer1().getPlayer().getId()}" th:text="${match.getPlayer1().getPlayer().getId()}"
+                                    th:selected="${match.winner == match.getPlayer1()}"></option>
+                            <option th:value="${match.getPlayer2().getPlayer().getId()}" th:text="${match.getPlayer2().getPlayer().getId()}"
+                                    th:selected="${match.winner == match.getPlayer2()}"></option>
+                        </select>
+                        <input type="hidden" name="matchId" th:value="${match.getId()}" />
+                </td>
+                <td data-title="Action">
+                    <button type="submit" class="button">Save</button>
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

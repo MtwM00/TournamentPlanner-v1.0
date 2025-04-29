@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Tournament Players</title>
+    <link rel="stylesheet" th:href="@{/css/newtable_styles.css}">
+</head>
+<body>
+
+<a th:href="@{/tournaments}">Back to Tournaments</a>
+<h2 th:text="'Tournament: ' + ${tournament.name}"></h2>
+
+
+<div class="buttonsInOneLine">
+    <!-- Match generation -->
+    <form th:action="@{/tournaments/generate-matches}" method="post" th:if="${!tournament.matchesGenerated}">
+        <input type="hidden" name="tournamentId" th:value="${tournament.id}" />
+        <button type="submit"  class="button">Generate Matches</button>
+    </form>
+
+    <a th:href="@{|/tournaments/${tournamentId}/matches|}" class="button" th:if="${tournament.matchesGenerated}">Matches</a>
+
+    <form th:action="@{|/tournaments/${tournamentId}/delete-matches|}" method="post" th:if="${tournament.matchesGenerated}">
+        <input type="hidden" name="tournamentId" th:value="${tournament.id}"/>
+        <button type="submit"  class="button">Delete Matches</button>
+    </form>
+</div>
+
+<!-- Participants -->
+<h3>Players in this Tournament</h3>
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tp, iterStat : ${tournamentPlayers.getContent()}">
+        <td data-title="#"> <span th:text="${iterStat.count + 6 * tournamentPlayers.number}"></span> </td>
+        <td data-title="Name"> <span th:text="${tp.player.firstName + ' ' + tp.player.lastName}"></span> </td>
+        <td data-title="Score"> <span th:text="${tp.score}"></span> </td>
+        <td>
+            <form method="post" th:action="@{|/tournaments/${tournamentId}/remove-player/${tp.player.id}|}">
+                <input type="hidden" name="tournamentId" th:value="${tournament.id}">
+                <input type="hidden" name="playerId" th:value="${tp.player.id}">
+                <button type="submit" class="button" th:disabled="${tournament.matchesGenerated}" th:title="${tournament.matchesGenerated} ? 'Cannot remove player if matches are generated!' : ''">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<div>
+    <a th:href="@{|/tournaments/${tournament.id}/players?participantsPage=${tournamentPlayers.number - 1}|}"
+       th:if="${tournamentPlayers.hasPrevious()}">Previous</a>
+
+    <span>Page <span th:text="${tournamentPlayers.number + 1}"></span> of <span th:text="${tournamentPlayers.totalPages == 0 ? 1 : tournamentPlayers.totalPages}"></span></span>
+
+    <a th:href="@{|/tournaments/${tournament.id}/players?participantsPage=${tournamentPlayers.number + 1}|}"
+       th:if="${tournamentPlayers.hasNext()}">Next</a>
+</div>
+
+<!-- Candidates -->
+<h3>Add Players to Tournament</h3>
+<form method="get" th:action="@{|/tournaments/${tournament.id}/players|}">
+    <input name="keyword" placeholder="Find by name or surname" size="50" th:value="${keyword}" type="text" class="textFieldInput">
+    <input type="hidden" name="candidatesPage" th:value="${candidatesPage}">
+    <button type="submit" class="button">Search</button>
+</form>
+<br>
+<form th:action="@{|/tournaments/${tournament.id}/players|}" method="post">
+    <table>
+        <thead>
+        <tr>
+            <th>Select</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="player : ${availablePlayers}">
+            <td data-title="Select">
+                <input type="checkbox" class="checkmark" name="playerIds" th:value="${player.id}" />
+            </td>
+            <td data-title="Name">
+                <span th:text="${player.firstName + ' ' + player.lastName}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <button type="submit" class="button">Add Selected Players</button>
+</form>
+<br>
+<div>
+    <a th:href="@{|/tournaments/${tournament.id}/players?candidatesPage=${availablePlayers.number - 1}${keyword != null and keyword != '' ? '&keyword=' + keyword : ''}|}"
+       th:if="${availablePlayers.hasPrevious()}">Previous</a>
+
+    <span>Page <span th:text="${availablePlayers.number + 1}"></span> of <span th:text="${availablePlayers.totalPages == 0 ? 1 : availablePlayers.totalPages}"></span></span>
+
+    <a th:href="@{|/tournaments/${tournament.id}/players?candidatesPage=${availablePlayers.number + 1}${keyword != null and keyword != '' ? '&keyword=' + keyword : ''}|}"
+       th:if="${availablePlayers.hasNext()}">Next</a>
+</div>
+
+
+</body>
+</html>

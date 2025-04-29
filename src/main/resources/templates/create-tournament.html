@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Tournament</title>
+    <link rel="stylesheet" th:href="@{/css/form_styles.css}">
+</head>
+<body>
+
+<a th:href="@{/tournaments}">← Back to tournament list</a>
+
+<div class="form-container>">
+<h2>Create a New Tournament</h2>
+
+<form th:action="@{/tournaments/new}" th:object="${tournament}" method="post">
+    <label for="name">Tournament Name:</label><br>
+    <input type="text" id="name" name="name" th:field="*{name}" class="textFieldInput" required><br><br>
+
+    <button type="submit">Create Tournament</button>
+</form>
+</div>
+</body>
+</html>

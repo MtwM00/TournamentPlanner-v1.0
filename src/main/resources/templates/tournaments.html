@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Tournaments</title>
+  <link rel="stylesheet" th:href="@{/css/newtable_styles.css}">
+</head>
+<body>
+
+<h2>Tournaments</h2>
+
+<div class="buttonsInOneLine">
+  <a th:href="@{/tournaments/new}" class="button">Create new tournament</a>
+  <a th:href="@{/add-player}" class="button">Add player</a>
+</div>
+<br><br>
+
+<!-- Tabela z listą turniejów -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="tournament : ${tournaments}">
+    <td data-title="ID">
+      <span th:text="${tournament.id}"></span>
+    </td>
+    <td data-title="Name">
+      <span th:text="${tournament.name}"></span>
+    </td>
+    <td data-title="Actions">
+      <a th:href="@{'/tournaments/' + ${tournament.id} + '/players'}" class="button">Players</a>
+      <a th:href="@{'/tournaments/' + ${tournament.id} + '/matches'}" class="button" th:if="${tournament.matchesGenerated}">Matches</a>
+      <a th:href="@{'/tournaments/' + ${tournament.id} + '/summary'}" class="button" th:if="${tournament.matchesGenerated}">Summary</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

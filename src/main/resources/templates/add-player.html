@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add player</title>
+  <link rel="stylesheet" th:href="@{/css/form_styles.css}">
+</head>
+<body>
+
+<a th:href="@{/tournaments}">← Back to tournament list</a>
+
+<h2>Add player</h2>
+
+<form th:action="@{/add-player}" th:object="${player}" method="post">
+  <label for="firstName">Name: </label><br>
+  <input type="text" id="firstName" name="name" th:field="*{firstName}" class="textFieldInput" required><br><br>
+  <label for="lastName">Surname: </label><br>
+  <input type="text" id="lastName" name="lastName" th:field="*{lastName}" class="textFieldInput" required><br><br>
+  <button type="submit">Add player to database</button>
+</form>
+
+</body>
+</html>

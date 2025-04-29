@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Players</title>
+    <link rel="stylesheet" th:href="@{/css/newtable_styles.css}">
+</head>
+<body>
+
+<h2>Players</h2>
+
+
+<br><br>
+
+<!-- Tabela z listą turniejów -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="player : ${players}">
+        <td data-title="ID">
+            <span th:text="${player.id}"></span>
+        </td>
+        <td data-title="Name">
+            <span th:text="${player.firstName} + ' ' + ${player.lastName}"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <a th:href="@{|/players/all?page=${players.number - 1}|}" th:if="${players.hasPrevious()}">Previous</a>
+    <span>Page <span th:text="${players.number + 1}"></span> of <span th:text="${players.totalPages}"></span></span>
+
+    <a th:href="@{|/players/all?page=${players.number + 1}|}"
+       th:if="${players.hasNext()}">Next</a>
+</div>
+
+</body>
+</html>
